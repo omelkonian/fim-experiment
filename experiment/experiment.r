@@ -5,19 +5,19 @@ library(arules)
 allE <- list(0.1, 0.05, 0.01)
 allD <- list(0.01, 0.001)
 allDat <- list(
-  # "chess.dat",
-  # "mushroom.dat",
-  # "T10I4D100K.txt",
-  # "retail.dat",
-  # "connect.dat",
-  # "pumsb_star.dat",
-  # "pumsb.dat"
+  "chess.dat",
+  "mushroom.dat",
+  "T10I4D100K.txt",
+  "retail.dat",
+  "connect.dat",
+  "pumsb_star.dat",
+  "pumsb.dat",
   "T40I10D100K.dat",
   "kosarak.dat",
   "accidents.dat"
 )
 
-# Load 
+# Load
 loadExperiment <- function(db) {
   for (e in allE) { for (d in allD) { load(sprintf("output/%s/(ε=%g)(δ=%g)", db, e, d), envir = globalenv()) }}
 }
@@ -25,7 +25,7 @@ loadExperiment <- function(db) {
 # Print C-like formatted strings
 printf <- function(...) cat(sprintf(...))
 
-# Convert a configuration to a filename 
+# Convert a configuration to a filename
 configToPath <- function(c) {
   sprintf("output/%s/(ε=%g)(δ=%g)", c$dataset, c$e, c$delta)
 }
@@ -65,7 +65,7 @@ mine <- function(filename, support) {
 # Calculate absolute frequencies
 freqs <- function(db, itemset) {
   mapply(function (x, y) abs(x - y),
-         itemset@quality$support, 
+         itemset@quality$support,
          support(itemset, db))
 }
 
