@@ -12,6 +12,7 @@
 \usepackage{color, colortbl}
 % Graphics
 \usepackage{graphics}
+\usepackage{graphicx}
 \graphicspath{{../experiment/output/}} % Location of the graphics files
 \usepackage{subfig}
 \usepackage{caption}
@@ -53,9 +54,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \part{Course Overview}\label{part1}
-
 \section{Introduction}
-This part gives an overview of the material covered in the \textit{Big Data} course. Due to space constraints, we only give a shallow explanation of the theory involved, and welcome the reader to enrol next year to study the topic more in depth.
+This part gives an overview of the material covered in the \textit{Big Data} course. Due to space constraints, we only give a shallow explanation of the theory involved and welcome the reader to enrol next year to study the topic more in depth.
 
 We first introduce the general problem of volume in the Big Data context. We then focus on a concrete problem, namely that of \it{Frequent Itemset Mining}. After a precise definition of the problem, we describe and conceptually compare two sampling-based solutions:
 \begin{enumerate}
@@ -94,18 +94,18 @@ Then, given a user-defined threshold $\theta$, an itemset $I$ is \it{frequent} w
 
 The naive solution would be to check each element of the power-set $P(\I)$, but that would lead to an exponential time complexity, since $|P(\I)| = 2^{|\I|}$.
 
-To improve on this, one must realise the \it{a-priori} property, namely that a set if frequent only if all of its subsets are frequent. With this in mind, we can now perform a level-wise search, which begins on singletons set and picks candidate sets of the next level only when they do not violate the a-priori property. Assuming a sparse database where frequent itemsets have a maximal size $m$, we get a much better time complexity of $O(|\I|^m)$.
+To improve on this, one must realise the \it{a-priori} property, namely that a set if frequent only if all of its subsets are frequent. With this in mind, we can now perform a level-wise search, which begins on singleton sets and picks candidate sets of the next level only when they do not violate the a-priori property. Assuming a sparse database where frequent itemsets have a maximal size $m$, we get a much better time complexity of $O(|\I|^m)$.
 
 % - Why should we care about them?
 \subsection{Motivation}
-The motivation for studying this particular problem, is that it is connected to the problem of mining \it{association rules}. Given a pair of disjoint sets $X, Y$, a support threshold $\theta_1$ and a confidence threshold $\theta_2$, the association rule of $X$ and $Y$ is denoted $X \rightarrow Y$ and should satisfy the following conditions:
+The motivation for studying this particular problem is that it is connected to the problem of mining \it{association rules}. Given a pair of disjoint sets $X, Y$, a support threshold $\theta_1$ and a confidence threshold $\theta_2$, the association rule of $X$ and $Y$ is denoted $X \rightarrow Y$ and should satisfy the following conditions:
 \begin{align*}
 &\P(XY) \geq \theta_1 \\
 &\P(Y|X) \geq \theta_2
 \end{align*}
 In order to discover association rules, the most difficult part consists of finding all frequent itemsets with support higher than $\theta_1$, hence the interest to this problem. Association rules can be quite useful, for instance when a service wants to recommend items for users to purchase.
 
-Furthermore, the a-priori algorithm can be used in a more general setting, namely that of \it{frequent pattern mining}. The main idea is that you perform this level-wise search procedure on any anti-monotone \it{Galois connection}, which we have effectively utilize to compute frequent patterns of a query language defined uniformly across different types of data (e.g. graphs, text).
+Furthermore, the a-priori algorithm can be used in a more general setting, namely that of \it{frequent pattern mining}. The main idea is that you perform this level-wise search procedure on any anti-monotone \it{Galois connection}, which we can effectively utilize to compute frequent patterns of a query language defined uniformly across different types of data (e.g. graphs, text).
 
 The motivated student is highly encouraged to attend the course next year, where there will be an enlightening digression through \textit{Galois theory}, so as to gain a more deep understanding of this generalization.
 
@@ -223,7 +223,7 @@ In fact, we can even prove that finite classes are also agnostic PAC-learnable i
 As you can immediately notice, lifting our bounds to the fully general setting is not for free. Specifically, we now need to increase the size of the minimal sample by a factor of $1/\epsilon$.
 
 \subsection{The Infinite Case}
-There are infinite classes we are not PAC-learnable, such as the the set of all functions $f: \X \to {0, 1}$, where $\X$ is an infinite domain.
+There are infinite classes which are not PAC-learnable, such as the the set of all functions $f: \X \to {0, 1}$, where $\X$ is an infinite domain.
 
 As it turns out though, there is a certain category of infinite classes that can be PAC-learned. Such hypothesis classes have restricted expressiveness and are referred to as classes of \it{small effective size}.
 
@@ -240,7 +240,6 @@ Finally, we can formally define the VC dimension of a range space $S=(X,\ R)$ as
 We are finally ready to give the final overarching result of PAC learning:\\
 \[ \H \text{ is PAC-learnable if and only if VC} (\H) < \infty
 \]
-
 Moreover, we can get upper bounds on the sample sizes, depending on the finite VC dimension $d$ of our hypothesis class $\H$, ranging over functions $h : \X \to {0,1}$ with $0/1$ loss:
 \begin{enumerate}
 \item $\H$ is agnostic PAC-learnable with:
@@ -254,7 +253,7 @@ We can again notice the $1/\epsilon$ factor, lurking around when we move to the 
 
 \subsection{Motivation}
 % - Why is it a good approach?
-There are several reasons why the study of PAC learning for getting bounds on sample sizes is worth pursuing.
+There are several reasons why the study of PAC learning, for getting bounds on sample sizes, is worth pursuing.
 
 First of all, as you probably have noticed by now, there is no reference of the type of the underlying distribution $\D$ we are trying to learn. Hence, PAC learning is considered a \textit{distribution-free} learning technique.
 
@@ -301,33 +300,37 @@ To complete the formalization of our problem in the context of PAC learning, we 
 $T_{\D}(W) = \{ \tau \in \D \ | \ W \subseteq \tau \}$.
 \end{enumerate}
 
-Interestingly, if we know an upper bound $v$ of the VC dimension of our range space $VC((X,\ R)) \leq v$, we can get a minimal sample size $m$ which is guaranteed to yield a an $(\epsilon,\ \delta)$-approximation of $F(\D,\ \theta)$, namely:
+Interestingly, if we know an upper bound $v$ of the VC dimension of our range space $VC((X,\ R)) \leq v$, we can get a minimal sample size $m$ which is guaranteed to yield an $(\epsilon,\ \delta)$-approximation of $F(\D,\ \theta)$, namely:
 \[ m \geq min\{ |\D|,\ \frac{4c}{\epsilon^2}(v + log\frac{1}{\delta}) \}
 \]
 for some constant $c$, experimentally found to be $\approx 0.5$.
 In other words, if we can compute an upper bound of $VC(S)$, we can get a reasonable sample size for  the quality of the result we aim to achieve.
 
-As a final step, in order to compute the VC dimension, we make the observation that it is the maximum cardinality $d$ of a subset of the transactions $A \subseteq \D$ 
+As a final step, in order to compute the VC dimension, we make the observation that it is the maximum cardinality $d$ of a subset of the transactions $A \subseteq \D$, such that:
+\[ \forall B \subset A: \exists I_B \subset \I : T_A(I_B) = B
+\]
 
-While it is computationally infeasible to get the exact VC dimension by the formula above, we can settle for an upper bound, given by the \it{d-index} of $\D$. This is defined as \it{the maximum integer $d$ such that $\D$ contains $d$ transactions of length at least $d$}.
+While it is computationally infeasible to get the exact VC dimension by the formula above, we can settle for an upper bound, given by the \it{d-bound} of $\D$. This is defined as \it{the maximum integer $d$ such that $\D$ contains $d$ transactions of length at least $d$}.
 
 We finally have all the ingredients to compute the VC dimension of a database of transactions $\D$ and get a sufficient sample size, which guarantees a high-quality solution to the FIM problem.
 
-Last but not least, it has been proven that this bound is actually \it{strict}, i.e. there exists a dataset $\D$ with d-index $d$ such that the corresponding range space $S$ has $VC(S)=d$.
+Last but not least, it has been proven that this bound is actually \it{strict}, i.e. there exists a dataset $\D$ with d-bound $d$ such that the corresponding range space $S$ has $VC(S)=d$.
 
 \section{Conceptual Comparison}
 % - Conceptually compare Toivonen-Riondato
 % - Was it worth the trip?
 In hindsight, did we actually gain anything over Toivonen's approach, by pursuing bounds drawn from the theory of PAC-learning? Or did we just make our lives more complicated and, in the end, the characterisation the VC dimension offers us is not enough for the FIM problem?
 
-The quantitative results suggest that PAC learning clearly provides a tighter bound, since it is linear in the VC dimension of the transaction database $\D$, while Toivonen's solution is linear to the cardinality of all items $|\I|$. Precisely, the corresponding bounds are:
+The quantitative results suggest that PAC learning clearly provides a tighter bound, since it is linear in the VC dimension of the transaction database $\D$, while previous solutions are linear to the cardinality of all items $|\I|$. Precisely, the corresponding bounds are:
 \begin{itemize}
-\item \bf{Toivonen} $O(\frac{1}{\epsilon^2}(|\I| + log\frac{1}{\delta}))$
 \item \bf{Riondato} $\frac{4c}{\epsilon^2}(d + log\frac{1}{\delta})$
+\item \bf{Others} $O(\frac{1}{\epsilon^2}(|\I| + log\frac{1}{\delta}))$
 \end{itemize}
 As an intuitive example, compare the total number of items that are sold on Amazon with the maximum number of (single occurrences of) items in a transaction. Generally, the maximum transaction length $\Delta$ is expected to be much smaller than the total number of items (i.e. $|\I| << \Delta$).
 
-Another advantage of Riondato's method concerns, the so far neglected, aspect of I/O access costs. Of course, both methods will require a single pass to get the actual sample. But from then on, Riondato's approach is guaranteed to compute all frequent itemsets with a single database pass, while Toivonen's method may require several subsequent scans in case of false negatives. While the fix proposed by Toivonen (i.e. lowering the minimal support threshold) mitigates the problem, it is rather unsatisfying since we do not have direct impact of the probability of false negatives over the sample size. In practice, minimizing this costs is of vital importance. Thus, although PAC-learning is an approach built on formal theory, it is at the same time very practical.
+In fact, this is not entirely accurate, since Toivonen's method does not depend on the size of the dataset at all. This is, ironically, its main disadvantage as far as scalability is concerned.
+
+Another advantage of Riondato's method concerns, the so far neglected, aspect of I/O access costs. Of course, both methods will require a single pass to get the actual sample. But from then on, Riondato's approach is guaranteed to compute all frequent itemsets with a single database pass, while Toivonen's method may require several subsequent scans in case of false negatives. While the fix proposed by Toivonen (i.e. lowering the minimal support threshold) mitigates the problem, it is rather unsatisfying since we do not have direct impact of the probability of false negatives over the sample size. In practice, minimizing this cost is of vital importance. Thus, although PAC-learning is an approach built on formal theory, it is at the same time very practical.
 
 A more subtle, but still quite practical, property of Riondato's approach is that the sample sizes depend only on the VC dimension, which makes it possible to reuse the same sample for multiple support thresholds.
 
@@ -336,21 +339,8 @@ A final important aspect examined by PAC learning that is worthy of our attentio
 This, in turn, can be applied in a more general setting as a means to \it{Structural Risk Minimization}. This technique is very appealing, since we can investigate solutions in many other data-mining problems.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%                                            PART II (3-4 pages)                                             %%%
+%%%                                            PART II                                                         %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% GENERAL TIPS
-% - Choose large datasets
-% - Compare on:
-%   + sample sizes
-%   + false positives and false negatives
-%   + how far off the estimated supports are
-%   + so you need the truth, compare smartly
-% - Experimental setup should be repeatable
-% - Give results in tables/graphs/...
-% - Conclude which approach is better and why
-% - Multiple experiments (varying the parameters e.g. θ, δ, μ)
-
 \cleardoublepage
 \part{Experimental Evaluation}\label{part2}
 
@@ -386,7 +376,7 @@ First and foremost, since our experimental depend on random processes, each resu
 \end{table}
 \vspace{-.5cm}
 
-\paragraph{Parameters} We provide results in 6 different configurations $c_i$, where we vary the approximation error $\epsilon$ and probability error $\delta$, while fixing Toivonen's parameter $\mu=\delta$ (i.e. chance to have a false-negative) and Riondato's constant $c=0.5$ (suggested by previous experiments). Configurations get increasingly more strict (i.e. tighter thresholds), with the exact parameters given below:
+\paragraph{Parameters} We provide results in 6 different configurations $c_i$, where we vary the approximation error $\epsilon$ and probability error $\delta$, while fixing Toivonen's parameter $\mu=\delta$ (i.e. chance to have a false-negative) and Riondato's constant $c=0.5$ (suggested by previous experiments). Configurations get increasingly more strict (i.e. tighter thresholds), with the exact parameters given in Table \ref{tab:config}.
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{l|rrrrrr}
@@ -494,6 +484,7 @@ To achieve this, we measure the error of the frequency estimation, which is a mo
 \centering
 \includegraphics[width=.7\columnwidth]{T40I10D100K.dat/freq.png}
 \end{figure}
+
 As we move to stricter configurations, both maximum and averages errors of both methods are very low. Across all settings, we observe that Riondato's approach consistently gives smaller errors. In looser settings, we notice that Toivonen's approach shows very large maximum errors.
 
 \subsection{Dataset II: kosarak}
@@ -545,7 +536,7 @@ More noteworthy is the fact that Toivonen's method is dominated by false-negativ
 \centering
 \includegraphics[width=.7\columnwidth]{kosarak.dat/freq.png}
 \end{figure}
-On the frequency estimation error, we can make roughly the same observations as before. Both approaches become more accurate, as we move to stricter parameters. Again, Riondato gives smaller errors and Toivonen suffer great maximum errors in loose settings.
+On the frequency estimation error, we can make roughly the same observations as before. Both approaches become more accurate, as we move to stricter parameters. Again, Riondato gives smaller errors and Toivonen suffers great maximum errors in loose settings.
 
 \section{Conclusion}
 To conclude, our measurements contradict Riondato's claim for smaller bounds of sample size. It is not the fact that the sample is linearly dependent on the number of items. This, in fact, is the reason behind Toivonen's low-quality results; it does not scale well with ever-larger dataset sizes.
@@ -554,6 +545,6 @@ Moreover, both methods seem to satisfy the user-defined thresholds in practice, 
 
 A major drawback of Toivonen's method is its extremely low precision, which can be attributed to the lowered minimum support threshold in which we mine against. Lowering this threshold is both a blessing and a curse, since we minimize the number of false-negatives (i.e. by lowering the possibility we miss a frequent itemset), but at the same time we dramatically increase the amount of false-positives (i.e. itemsets of support less than the minimum will actually be retrieved).
 
-Last but not least, all experiments were developed in the R programming language, as well as the data plotting of the results. You can view the corresponding scripts in a Github repository\site{https://www.github.com/omelkonian/fim-experiment}, where we also host the same plots for all other datasets mentioned in Table \ref{tab:datasets}.
+Last but not least, all experiments were developed in the R programming language. We used the \it{arules} package for FIM-related utilities and the \it{ggplot2} package for data visualization. You can view the corresponding scripts in a Github repository\site{https://www.github.com/omelkonian/fim-experiment}, where we also host the same plots for all other datasets mentioned in Table \ref{tab:datasets}.
 
 \end{document}
